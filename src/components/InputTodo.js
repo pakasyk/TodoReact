@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+
 class InputTodo extends Component {
   state = {
     term: ""
@@ -13,7 +14,7 @@ class InputTodo extends Component {
 
   render() {
     return (
-      <form onSubmit={this.onFormSubmit}>
+      <form onSubmit={this.onFormSubmit} className="mt-2 mb-3">
         <input
           autoFocus
           className="form-control"

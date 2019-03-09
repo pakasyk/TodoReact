@@ -15,6 +15,10 @@ class TodoList extends Component {
 
   onEditSubmit = (e, i) => {
     e.preventDefault();
+    console.log("state.inputEdit:");
+    
+    console.log(this.state.inputEdit);
+    
     this.props.onFormSubmit(this.state.inputEdit, i);
     this.setState({ selected: "" });
   };
@@ -25,21 +29,23 @@ class TodoList extends Component {
     let todos = this.props.todos.map((todo, i) => {
       if (todo === this.state.selected) {
         return (
-          <tr key={i}>
+          <tr key={i} className="table-warning">
             <th scope="row">{i + 1}</th>
             <td>
               <form onSubmit={e => this.onEditSubmit(e, i)}>
                 <input
                   autoFocus
                   type="text"
-                  value={this.state.inputEdit}
-                  onChange={e => this.setState({ inputEdit: e.target.value })}
+                  value={this.state.inputEdit.term}
+                  onChange={e => {
+                    return this.setState({ inputEdit: {term: e.target.value, uid: todo.uid, done: todo.done, order: todo.order || 0, id: todo.id}})
+                  }}
                 />
               </form>
             </td>
             <td>
               <button
-                type="button"
+                type="submit"
                 className="btn btn-success btn-sm"
                 onClick={e => this.onEditSubmit(e, i)}
               >
@@ -48,21 +54,58 @@ class TodoList extends Component {
             </td>
           </tr>
         );
-      } else {
+      } else if (todo.done === false){
         return (
           <tr key={i}>
             <th scope="row">{i + 1}</th>
-            <td>{todo}</td>
+            <td>{todo.term}</td>
             <td>
               <button
-                type="button"
+                type="submit"
+                className="btn btn-dark btn-sm"
+                onClick={() => this.props.onDoneClick(i)}
+              >
+                <i className="fas fa-check"></i>
+              </button>
+              <button
+                type="submit"
                 className="btn btn-primary btn-sm"
                 onClick={() => this.onEditClick(todo)}
               >
                 <i className="fas fa-pen" />
               </button>
               <button
-                type="button"
+                type="submit"
+                className="btn btn-danger btn-sm"
+                onClick={() => this.props.onDeleteClick(i)}
+              >
+                <i className="fas fa-trash" />
+              </button>
+            </td>
+          </tr>
+        );
+      } else {
+        return (
+          <tr key={i} className="table-secondary">
+            <th scope="row">{i + 1}</th>
+            <td>{todo.term}</td>
+            <td>
+              <button
+                type="submit"
+                className="btn btn-dark btn-sm"
+                onClick={() => this.props.onUnDoneClick(i)}
+              >
+                <i className="fas fa-undo"></i>
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary btn-sm"
+                onClick={() => this.onEditClick(todo)}
+              >
+                <i className="fas fa-pen" />
+              </button>
+              <button
+                type="submit"
                 className="btn btn-danger btn-sm"
                 onClick={() => this.props.onDeleteClick(i)}
               >
@@ -74,8 +117,8 @@ class TodoList extends Component {
       }
     });
     return (
-      <table className="table">
-        <thead>
+      <table className="table table-light">
+        <thead className="thead-dark">
           <tr>
             <th scope="col">#</th>
             <th scope="col">ToDo</th>
